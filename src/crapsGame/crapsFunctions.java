@@ -50,39 +50,33 @@ public class crapsFunctions {
     }
 
     public static boolean joueEtGagneUnTourDeCraps(int turn, int score, int tokens, int mise, int goal){
+        boolean back = false;
         if (turn == 0) {
             if (score == 7 || score == 11) {
-                System.out.println("You Win !! Perfect ! HA HA HA HA HA.");return true;
+                System.out.println("You Win !! Perfect ! HA HA HA HA HA.");
+                back = true;
             }
             else if (score == 2 || score == 3 || score == 12) {
-                System.out.println("You Loss Man. Try Again.");return false;
+                System.out.println("You Loss Man. Try Again.");
             }
         } else {
-            while ((tokens > 0 && turn > 0)) {
-                String answer = askGamer();
-                if(answer.equals("O")){
-                    if (score == 7) {
-                        System.out.println("You make a 7 and you Loss Man. Try Again.");
-                        return false;
-                    }else if (score == goal) {
-                        System.out.println("You Win !! Double Bet. You got now " + tokens + " tokens now.");return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }else {
-                    return false;
+            if((tokens > 0 && turn > 0)) {
+                if (score == 7) {
+                    System.out.println("You make a 7 and you Loss Man. Try Again.");
+                }else if (score == goal) {
+                    System.out.println("You Win !! Double Bet. You got now " + tokens + " tokens now.");
+                    back = true;
                 }
             }
         }
-        return false;
+        return back;
     }
 
     public static void startGame(){
         int tokens = 10, dice1, dice2, score = 0, goal = 0, mise = 0, j = 0;
         String answer;
         Scanner s = new Scanner(System.in);
-        boolean tour = true;
+        boolean res = true;
         System.out.println("======================== GAME START ==============================");
         do {
             answer = askGamer();
@@ -92,20 +86,20 @@ public class crapsFunctions {
                 dice2 = roll();
                 diceDsiplay(dice1, dice2);
                 score = dice1 + dice2;
-                tour = joueEtGagneUnTourDeCraps(j, score, tokens, mise, goal);
-                if(tour)
+                res = joueEtGagneUnTourDeCraps(j, score, tokens, mise, goal);
+                if(res)
                     tokens += (mise * 2);
                 else
                     tokens -= mise;
                 System.out.println("Après ce tour il vous reste : " + tokens +"jetons");
             }
             else{
-                tour = false;
+                res = false;
             }
             if(j == 0)
                 goal = score;
             j++;
-        }while (mise <= 0 || (answer.equals("N")) || !tour);
+        }while (mise <= 0 || (answer.equals("N")) || !res || (tokens == 0));
         System.out.println("=========================================");
         System.out.println("==========     GAME OUT       ===========");
         System.out.println("=========================================");
