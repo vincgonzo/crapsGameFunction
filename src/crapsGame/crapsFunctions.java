@@ -16,7 +16,7 @@ public class crapsFunctions {
         int dice = randomGenerator.nextInt (6) + 1;
         return dice;
     }
-    public static void diceDsiplay(int dice1, int dice2){
+    public static void diceDisplay(int dice1, int dice2){
         System.out.println("Vous avez lance " + dice1 + " et " + dice2 + ". La somme est " + (dice1 + dice2) + ".");
         return;
     }
@@ -25,7 +25,7 @@ public class crapsFunctions {
         String mot;
         do {
             Scanner s = new Scanner(System.in);
-            System.out.println("Voulez vous jouer ? N/O");
+            System.out.println("Voulez vous encore jouer ? N/O");
             mot = s.next();
         }while (!(mot.equals("O") || mot.equals("N")));
         return mot;
@@ -49,57 +49,60 @@ public class crapsFunctions {
         return m;
     }
 
-    public static boolean joueEtGagneUnTourDeCraps(int turn, int score, int tokens, int mise, int goal){
+    public static boolean joueEtGagneUnTourDeCraps(){
+        int score = 0, dice1, dice2, j = 0, goal;
         boolean back = false;
-        if (turn == 0) {
-            if (score == 7 || score == 11) {
-                System.out.println("You Win !! Perfect ! HA HA HA HA HA.");
-                back = true;
-            }
-            else if (score == 2 || score == 3 || score == 12) {
-                System.out.println("You Loss Man. Try Again.");
-            }
-        } else {
-            if((tokens > 0 && turn > 0)) {
-                if (score == 7) {
-                    System.out.println("You make a 7 and you Loss Man. Try Again.");
-                }else if (score == goal) {
-                    System.out.println("You Win !! Double Bet. You got now " + tokens + " tokens now.");
-                    back = true;
+        for (int i=0; i < 2;i++){
+            dice1 = roll();
+            dice2 = roll();
+            diceDisplay(dice1, dice2);
+            score = dice1 + dice2;
+            if (i == 0) {
+                if (score == 7 || score == 11) {
+                    System.out.println("Vous avez fait 7 ou 11 au premier coup. Vous avez gagné le gros lot !!");
+                    back = true;i++;
                 }
+                else if (score == 2 || score == 3 || score == 12) {
+                    System.out.println("Mauvaise pioche pour démarrer, perdu !!!!");i++;
+                }
+            } else {
+                goal = score;
+                do {
+                    dice1 = roll();
+                    dice2 = roll();
+                    diceDisplay(dice1, dice2);
+                    score = dice1 + dice2;
+
+                    if (score == 7) {
+                        System.out.println("You make a 7 and you Loss Man. Try Again.");
+                    }else if (score == goal) {
+                        System.out.println("Vous avez gagné, vous doublé votre mise..");
+                        back = true;
+                    }
+                }while (score == goal || score == 7);
             }
         }
         return back;
     }
 
     public static void startGame(){
-        int tokens = 10, dice1, dice2, score = 0, goal = 0, mise = 0, j = 0;
+        int tokens = 10, mise = 0;
         String answer;
         Scanner s = new Scanner(System.in);
         boolean res = true;
         System.out.println("======================== GAME START ==============================");
         do {
-            answer = askGamer();
             mise = bet(tokens);
-            if(mise != 0){
-                dice1 = roll();
-                dice2 = roll();
-                diceDsiplay(dice1, dice2);
-                score = dice1 + dice2;
-                res = joueEtGagneUnTourDeCraps(j, score, tokens, mise, goal);
-                if(res)
-                    tokens += (mise * 2);
-                else
-                    tokens -= mise;
-                System.out.println("Après ce tour il vous reste : " + tokens +"jetons");
+            res = joueEtGagneUnTourDeCraps();
+            if(res) {
+                tokens += (mise * 2);
             }
-            else{
-                res = false;
+            else {
+                tokens -= mise;
             }
-            if(j == 0)
-                goal = score;
-            j++;
-        }while (mise <= 0 || (answer.equals("N")) || !res || (tokens == 0));
+            answer = askGamer();
+            System.out.println("answer == " + answer);
+        }while (mise == 0 || !(answer.equals("O")) || (tokens == 0));
         System.out.println("=========================================");
         System.out.println("==========     GAME OUT       ===========");
         System.out.println("=========================================");
