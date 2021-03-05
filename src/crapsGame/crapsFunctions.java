@@ -67,19 +67,22 @@ public class crapsFunctions {
                 }
             } else {
                 goal = score;
-                do {
+                System.out.println("Maintenant l'objectif est : " + goal);
+                while ((score == goal) || (score == 7)) {
                     dice1 = roll();
                     dice2 = roll();
                     diceDisplay(dice1, dice2);
                     score = dice1 + dice2;
 
                     if (score == 7) {
-                        System.out.println("You make a 7 and you Loss Man. Try Again.");
+                        System.out.println("You make a 7 and you Loss Man. Try Again.");i++;
                     }else if (score == goal) {
-                        System.out.println("Vous avez gagné, vous doublé votre mise..");
+                        System.out.println("Vous avez gagné, vous doublé votre mise..");i++;
                         back = true;
                     }
-                }while (score == goal || score == 7);
+                    System.out.println( "Value goal ==> " + goal);
+                    System.out.println( "Value score ==> " + score);
+                }
             }
         }
         return back;
@@ -102,7 +105,7 @@ public class crapsFunctions {
             }
             answer = askGamer();
             System.out.println("answer == " + answer);
-        }while (mise == 0 || !(answer.equals("O")) || (tokens == 0));
+        }while (mise == 0 || !(answer.equals("N")) || (tokens == 0));
         System.out.println("=========================================");
         System.out.println("==========     GAME OUT       ===========");
         System.out.println("=========================================");
