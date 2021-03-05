@@ -49,18 +49,18 @@ public class crapsFunctions {
         return m;
     }
 
-    public static void loss(int tokens, int mise){
-        tokens -= mise;
-        return;
+    public static int evaluateWin(int tokens, int mise, boolean win)
+    {
+        if(win == true)
+            tokens += (mise * 2);
+        else
+            tokens -= mise;
+        return tokens;
     }
 
-    public static void win(int tokens, int mise){
-        tokens += (mise * 2);
-        return;
-    }
-
-    public static void joueEtGagneUnTourDeCraps(int tokens, int mise){
+    public static int joueEtGagneUnTourDeCraps(int tokens, int mise){
         int score = 0, dice1, dice2, goal = 0;
+        boolean win = false;
         do {
             dice1 = roll();
             dice2 = roll();
@@ -68,12 +68,11 @@ public class crapsFunctions {
             score = dice1 + dice2;
             if (score == 7 || score == 11) {
                 System.out.println("Vous avez fait 7 ou 11 au premier coup. Vous avez gagné le gros lot !!");
-                win(tokens, mise);
-                goal = score;
+                win = true;
+                tokens = evaluateWin(tokens, mise, win);
             }
             else if (score == 2 || score == 3 || score == 12) {
                 System.out.println("Mauvaise pioche pour démarrer, perdu !!!!");
-                goal = score;
             }else {
                 goal = score;
                 System.out.println("Maintenant l'objectif est : " + goal);
@@ -85,17 +84,18 @@ public class crapsFunctions {
 
                     if (score == goal) {
                         System.out.println("Vous avez gagné, vous doublé votre mise..");
-                        win(tokens, mise);
+                        win = true;
+                        tokens = evaluateWin(tokens, mise, win);
                     }
                     if (score == 7) {
                         System.out.println("You make a 7 and you Loss Man. Try Again.");
-                        loss(tokens, mise);
-                        goal = score;
+                        tokens = evaluateWin(tokens, mise, win);
+                        win = true;
                     }
-                }while (score != goal);
+                }while (win != true);
             }
-        }while (score != goal);
-        return;
+        }while (win != true);
+        return tokens;
     }
 
     public static void startGame(){
@@ -105,10 +105,11 @@ public class crapsFunctions {
         System.out.println("======================== GAME START ==============================");
         do {
             mise = bet(tokens);
-            joueEtGagneUnTourDeCraps(tokens, mise);
+            tokens = joueEtGagneUnTourDeCraps(tokens, mise);
             answer = askGamer();
             System.out.println("answer == " + answer);
         }while (mise != 0 && !(answer.equals("N")) && (tokens != 0));
+        System.out.println("Vous finissez la partie avec " + tokens + " jetons");
         System.out.println("=========================================");
         System.out.println("==========     GAME OUT       ===========");
         System.out.println("=========================================");
